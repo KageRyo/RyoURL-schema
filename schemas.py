@@ -31,8 +31,23 @@ class UrlSchema(BaseModel):
     visit_count: int
     creator_username: Optional[str] = None
 
+    class Config:
+        from_attributes = True
+
+    @classmethod
+    def from_orm(cls, obj):
+        return cls(
+            origin_url=obj.origin_url,
+            short_string=obj.short_string,
+            short_url=obj.short_url,
+            create_date=obj.create_date,
+            expire_date=obj.expire_date,
+            visit_count=obj.visit_count,
+            creator_username=obj.user.username if obj.user else None
+        )
+
 class ErrorSchema(BaseModel):
-    message: str
+    detail: str
 
 class UrlCreateSchema(BaseModel):
     origin_url: HttpUrl
